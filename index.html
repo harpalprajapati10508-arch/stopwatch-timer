@@ -1,1 +1,46 @@
-<p>hi</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch Timer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Precision Timing Utility</p>
+      <h1 class="title">Stopwatch</h1>
+    </header>
+
+    <section class="stopwatch-card" aria-label="Stopwatch">
+
+      <div class="stopwatch-face" id="stopwatchFace" data-state="idle">
+        <div class="face-inner">
+          <p class="face-label">Elapsed Time</p>
+          <p class="display" id="display" aria-live="polite">00 : 00 : 00</p>
+          <p class="status-pill">
+            <span class="status-dot" id="statusDot"></span>
+            <span class="status-text" id="statusLabel">Ready</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button type="button" class="btn btn-start" id="startBtn">Start</button>
+        <button type="button" class="btn btn-stop" id="stopBtn" disabled>Stop</button>
+        <button type="button" class="btn btn-reset" id="resetBtn">Reset</button>
+      </div>
+
+    </section>
+
+    <footer class="page-footer">
+      <p>Built with HTML, CSS &amp; JavaScript — no frameworks, no dependencies.</p>
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
