@@ -1,0 +1,292 @@
+:root {
+  /* Color */
+  --bg: #0F1115;
+  --surface: #161A21;
+  --face-bg: #1B2029;
+  --ring: #262C36;
+  --tick-minor: #333B47;
+  --tick-major: #4A5364;
+  --text-primary: #E9EBEF;
+  --text-secondary: #828B99;
+  --accent-start: #4FD1B5;
+  --accent-stop: #F1715B;
+  --accent-reset: #8E97A8;
+
+  /* Typography */
+  --font-display: 'Courier New', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Layout */
+  --radius-lg: 24px;
+  --radius-md: 14px;
+}
+
+/* ---- Reset & base ---- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 0%, #1A1E26 0%, var(--bg) 55%);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  padding: 32px 16px;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ---- Page layout ---- */
+.page {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.page-header {
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.title {
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Card ---- */
+.stopwatch-card {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--ring);
+  border-radius: var(--radius-lg);
+  padding: clamp(28px, 6vw, 40px) clamp(20px, 5vw, 32px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- Stopwatch dial / face ---- */
+.stopwatch-face {
+  --face-glow: transparent;
+  position: relative;
+  width: clamp(220px, 70vw, 300px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: var(--face-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 1px var(--ring),
+    0 18px 40px -16px rgba(0, 0, 0, 0.6),
+    0 0 36px -4px var(--face-glow);
+  transition: box-shadow 0.3s ease;
+}
+
+.stopwatch-face[data-state="running"] {
+  --face-glow: var(--accent-start);
+}
+
+.stopwatch-face[data-state="paused"] {
+  --face-glow: var(--accent-stop);
+}
+
+/* Minor tick marks (60 ticks, etched ring near the rim) */
+.stopwatch-face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    var(--tick-minor) 0deg 1deg,
+    transparent 1deg 6deg
+  );
+  -webkit-mask: radial-gradient(circle closest-side, transparent 82%, #000 86% 92%, transparent 96%);
+  mask: radial-gradient(circle closest-side, transparent 82%, #000 86% 92%, transparent 96%);
+}
+
+/* Major tick marks (12 ticks, slightly longer, evenly spaced) */
+.stopwatch-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    var(--tick-major) 0deg 2deg,
+    transparent 2deg 30deg
+  );
+  -webkit-mask: radial-gradient(circle closest-side, transparent 78%, #000 82% 94%, transparent 98%);
+  mask: radial-gradient(circle closest-side, transparent 78%, #000 82% 94%, transparent 98%);
+}
+
+.face-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.face-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 7vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  display: inline-block;
+}
+
+.stopwatch-face[data-state="running"] .status-dot {
+  background: var(--accent-start);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.stopwatch-face[data-state="paused"] .status-dot {
+  background: var(--accent-stop);
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(79, 209, 181, 0.5); }
+  50% { box-shadow: 0 0 0 5px rgba(79, 209, 181, 0); }
+}
+
+/* ---- Controls ---- */
+.controls {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  flex: 1 1 0;
+  min-width: 96px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--ring);
+  background: linear-gradient(180deg, #20262F, #181C23);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 6px 14px -6px rgba(0, 0, 0, 0.45);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 2px 6px -2px rgba(0, 0, 0, 0.5);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 3px;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-start:hover:not(:disabled) {
+  border-color: var(--accent-start);
+  color: var(--accent-start);
+}
+
+.btn-stop:hover:not(:disabled) {
+  border-color: var(--accent-stop);
+  color: var(--accent-stop);
+}
+
+.btn-reset:hover:not(:disabled) {
+  border-color: var(--accent-reset);
+  color: var(--accent-reset);
+}
+
+/* ---- Footer ---- */
+.page-footer {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+/* ---- Responsive adjustments ---- */
+@media (max-width: 360px) {
+  .controls {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+/* ---- Accessibility: respect reduced motion preference ---- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
